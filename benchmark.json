@@ -1,0 +1,153 @@
+{
+  "system": "HawkesForge",
+  "author": "晨星",
+  "config": {
+    "seed": 42,
+    "n_dims": 3,
+    "n_seeds": 3,
+    "T": 70.0,
+    "beta_true": 1.0,
+    "mu_scale": 0.28,
+    "alpha_diag": 0.5,
+    "alpha_off": 0.15,
+    "beta_grid": [
+      1.0
+    ],
+    "max_iter": 4000,
+    "lr": 0.05,
+    "tol": 1e-07,
+    "l2_offdiag": 0.001,
+    "spectral_cap": 0.97,
+    "min_intensity": 1e-09,
+    "n_test_events_target": 900
+  },
+  "main": {
+    "regime": "coupled",
+    "rows": [
+      {
+        "seed": 0,
+        "n_train": 500,
+        "n_test": 345,
+        "true_spectral": 0.7999999999999998,
+        "poisson": 0.583148046174745,
+        "poisson_sr": 0.0,
+        "poisson_conv": true,
+        "poisson_beta": 0.0,
+        "unihawkes": 0.45600790336620767,
+        "unihawkes_sr": 0.7452916584484154,
+        "unihawkes_conv": true,
+        "unihawkes_beta": 1.0,
+        "hawkesfuse": 0.45508025666240187,
+        "hawkesfuse_sr": 0.8297964697571728,
+        "hawkesfuse_conv": true,
+        "hawkesfuse_beta": 1.0
+      },
+      {
+        "seed": 1,
+        "n_train": 403,
+        "n_test": 479,
+        "true_spectral": 0.7999999999999998,
+        "poisson": 0.19431160525116767,
+        "poisson_sr": 0.0,
+        "poisson_conv": true,
+        "poisson_beta": 0.0,
+        "unihawkes": 0.05680202749671611,
+        "unihawkes_sr": 0.6119781974660707,
+        "unihawkes_conv": true,
+        "unihawkes_beta": 1.0,
+        "hawkesfuse": 0.04984898843305058,
+        "hawkesfuse_sr": 0.7129015102812383,
+        "hawkesfuse_conv": true,
+        "hawkesfuse_beta": 1.0
+      },
+      {
+        "seed": 2,
+        "n_train": 563,
+        "n_test": 392,
+        "true_spectral": 0.7999999999999998,
+        "poisson": 0.463077705014783,
+        "poisson_sr": 0.0,
+        "poisson_conv": true,
+        "poisson_beta": 0.0,
+        "unihawkes": 0.31672158268929473,
+        "unihawkes_sr": 0.7414916873912154,
+        "unihawkes_conv": true,
+        "unihawkes_beta": 1.0,
+        "hawkesfuse": 0.3041920125597834,
+        "hawkesfuse_sr": 0.8539858929462472,
+        "hawkesfuse_conv": true,
+        "hawkesfuse_beta": 1.0
+      }
+    ],
+    "aggregate": {
+      "per_model": {
+        "poisson": {
+          "mean": 0.4135124521468985,
+          "std": 0.1625648181832335
+        },
+        "unihawkes": {
+          "mean": 0.27651050451740616,
+          "std": 0.16543685792066062
+        },
+        "hawkesfuse": {
+          "mean": 0.2697070858850786,
+          "std": 0.16722241240039554
+        }
+      },
+      "best": "hawkesfuse",
+      "deltas": {
+        "hawkesfuse_vs_poisson": 0.14380536626181994,
+        "hawkesfuse_vs_unihawkes": 0.006803418632327585
+      }
+    }
+  },
+  "deterministic": true,
+  "honesty_poisson_regime": {
+    "seed": 0,
+    "n_train": 40,
+    "n_test": 45,
+    "true_spectral": 0.0,
+    "poisson": 2.5514153948209986,
+    "poisson_sr": 0.0,
+    "poisson_conv": true,
+    "poisson_beta": 0.0,
+    "unihawkes": 2.5558671239848576,
+    "unihawkes_sr": 0.13220878250988768,
+    "unihawkes_conv": true,
+    "unihawkes_beta": 1.0,
+    "hawkesfuse": 2.581694290266445,
+    "hawkesfuse_sr": 0.17597350588990374,
+    "hawkesfuse_conv": true,
+    "hawkesfuse_beta": 1.0
+  },
+  "failure_cases": [
+    {
+      "case": "FC1 不稳定过程(分支比>1)",
+      "true_spectral": 1.8,
+      "hawkesfuse_nll": -5.788208217736703,
+      "hawkesfuse_sr": 0.8418439627894075,
+      "hawkesfuse_conv": true,
+      "note": "真实过程非平稳；HawkesFuse 谱投影将其压回 cap 以内，flagship 仍可用但不可声称还原真实结构"
+    },
+    {
+      "case": "FC2 稀疏数据(激发不可辨识)",
+      "n_train": 84,
+      "hawkesfuse_nll": 0.9903183464485058,
+      "unihawkes_nll": 0.9686225730571512,
+      "gain_fuse_minus_uni": -0.021695773391354645,
+      "note": "事件数极少时跨维激发无法从数据中学出，旗舰退化为 uni（增益≈0），属诚实负结果"
+    },
+    {
+      "case": "FC3 衰减率误设(beta=0.5 未进网格)",
+      "mismatched_hawkesfuse_nll": 0.7007687150100309,
+      "matched_hawkesfuse_nll": 0.6804724787183968,
+      "delta_matched_minus_mismatched": -0.02029623629163413,
+      "note": "beta 误设使 NLL 显著变高；加入匹配值后回落，说明需把 beta 纳入网格搜索"
+    }
+  ],
+  "ablation": {
+    "hawkesfuse_vs_poisson": 0.14380536626181994,
+    "hawkesfuse_vs_unihawkes": 0.006803418632327585
+  },
+  "elapsed_sec": 1059.84
+}

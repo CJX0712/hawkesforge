@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install (locked deps + tools)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.lock.txt
+          pip install "ruff==0.16.10" pytest pytest-cov
+
+      - name: Lint (hard gate, no || true)
+        run: |
+          python -m ruff check .
+          python -m ruff format --check .
+
+      - name: Tests + coverage
+        run: python -m pytest -q -W ignore::UserWarning --cov=core --cov=hawkes --cov=data --cov=eval --cov=pipeline --cov-report=term
+
+      - name: Demo smoke (determinism re-check)
+        run: python examples/run_demo.py

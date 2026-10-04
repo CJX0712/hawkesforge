@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hawkesforge"
+version = "0.1.0"
+description = "World-class temporal point process / Hawkes self-exciting event modeling system (author 晨星)"
+requires-python = ">=3.12"
+dependencies = ["numpy>=2.0"]
+license = { text = "MIT" }
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q -W ignore::UserWarning --cov=core --cov=hawkes --cov=data --cov=eval --cov=pipeline --cov-report=term"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# 排除：隔离 venv、缓存、以及从 SOP 技能拷贝的辅助脚本（自带风格，非系统被测代码）
+exclude = ["scripts", ".venv", "venv", ".pytest_cache", ".ruff_cache", "__pycache__"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["PLR2004", "PLR0913", "BLE001"]
+
+[tool.ruff.format]
+quote-style = "double"

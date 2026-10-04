@@ -1,0 +1,24 @@
+# 虚拟环境与字节码
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# 覆盖率与临时日志
+.coverage
+.coverage.*
+htmlcov/
+*.log
+
+# 数据缓存 / 模型权重 / 密钥
+*.npz
+*.npy
+*.pt
+*.ckpt
+*.onnx
+.env
+*.secret
